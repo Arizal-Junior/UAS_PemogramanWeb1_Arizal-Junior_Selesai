@@ -1,0 +1,192 @@
+/* assets/css/login-style.css */
+@import url('https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css');
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    /* Background Putih Polos agar profesional */
+    background-color: #ffffff; 
+    margin: 0;
+    padding: 0;
+    height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.login-container {
+    width: 100%;
+    padding: 20px;
+    display: flex;
+    justify-content: center;
+}
+
+/* KARTU LOGIN UTAMA */
+.login-card {
+    background-color: #fff;
+    width: 100%;
+    max-width: 850px;
+    height: 500px;
+    border-radius: 20px;
+    /* Shadow sedikit lebih tegas agar kontras dengan putih */
+    box-shadow: 0 0 40px rgba(0, 0, 0, 0.08); 
+    display: flex;
+    overflow: hidden;
+}
+
+/* --- BAGIAN KIRI (DEKORASI) --- */
+.card-left {
+    flex: 1;
+    position: relative;
+    background-color: #fff;
+}
+
+/* Bentuk Abstrak Besar (Warna KATEGORI - HIJAU) */
+.shape-blob-1 {
+    position: absolute;
+    top: -50px;
+    left: -50px;
+    width: 350px;
+    height: 450px;
+    /* Menggunakan Gradient Hijau Dashboard */
+    background: linear-gradient(135deg, #81c784 0%, #4caf50 100%);
+    border-radius: 40% 60% 70% 30% / 40% 50% 60% 50%;
+    opacity: 0.9;
+}
+
+/* Bentuk Abstrak Kecil (Warna PRODUK - PINK) */
+.shape-blob-2 {
+    position: absolute;
+    bottom: -30px;
+    left: 20px;
+    width: 150px;
+    height: 150px;
+    /* Menggunakan Gradient Pink Dashboard */
+    background: linear-gradient(135deg, #ff80ab 0%, #ec407a 100%);
+    border-radius: 50%;
+    opacity: 0.85;
+}
+
+/* Bentuk Abstrak Tambahan (Warna USER - BIRU) */
+.shape-blob-3 {
+    position: absolute;
+    bottom: 50px;
+    right: -20px;
+    width: 80px;
+    height: 80px;
+    /* Menggunakan Gradient Biru Dashboard */
+    background: linear-gradient(135deg, #64b5f6 0%, #2196f3 100%);
+    border-radius: 50%;
+    opacity: 0.8;
+}
+
+/* --- BAGIAN KANAN (FORM) --- */
+.card-right {
+    flex: 1;
+    padding: 50px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.login-header {
+    margin-bottom: 30px;
+    text-align: center;
+}
+
+.login-header h2 {
+    font-weight: 700;
+    color: #333;
+    font-size: 1.8rem;
+}
+
+/* Input Styles */
+.form-group {
+    margin-bottom: 20px;
+    position: relative;
+}
+
+.form-control-custom {
+    width: 100%;
+    padding: 12px 15px 12px 45px;
+    background-color: #e9ecef;
+    border: none;
+    border-radius: 8px;
+    color: #495057;
+    font-size: 0.95rem;
+    transition: all 0.3s;
+}
+
+.form-control-custom:focus {
+    background-color: #fff;
+    /* Outline Hijau Dashboard */
+    box-shadow: 0 0 0 2px #81c784; 
+    outline: none;
+}
+
+/* Icon di dalam input */
+.input-icon {
+    position: absolute;
+    left: 15px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #6c757d;
+}
+
+/* Tombol Login Gradient (HIJAU UTAMA) */
+.btn-login {
+    width: 100%;
+    padding: 12px;
+    border: none;
+    border-radius: 30px;
+    /* Gradient Hijau Kuat agar tombol 'pop' dan sesuai tema Matcha */
+    background: linear-gradient(to right, #66bb6a, #43a047); 
+    color: #fff; /* Text Putih agar kontras */
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-top: 10px;
+    cursor: pointer;
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.btn-login:hover {
+    transform: scale(1.02);
+    /* Shadow Hijau */
+    box-shadow: 0 5px 15px rgba(76, 175, 80, 0.4);
+    background: linear-gradient(to right, #57a65b, #2e7d32);
+}
+
+.forgot-pass {
+    text-align: center;
+    margin-top: 15px;
+    font-size: 0.85rem;
+    color: #adb5bd;
+}
+
+.create-account {
+    text-align: center;
+    margin-top: 40px;
+    font-size: 0.9rem;
+    color: #6c757d;
+}
+
+/* Responsif untuk HP */
+@media (max-width: 768px) {
+    .login-card {
+        flex-direction: column;
+        height: auto;
+    }
+    .card-left {
+        height: 150px;
+        width: 100%;
+        overflow: hidden;
+    }
+    .shape-blob-1 {
+        width: 100%;
+        top: -100px;
+        border-radius: 0 0 50% 50%;
+    }
+    .card-right {
+        padding: 30px;
+    }
+}
