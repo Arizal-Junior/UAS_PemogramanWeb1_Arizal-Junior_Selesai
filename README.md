@@ -30,8 +30,10 @@
 
 ---
 
-## 🎥 Video Demo
-Link Gdrive: https://drive.google.com/drive/folders/1EkEnMQ_ubY4QtnRSSLLfV4tNs3Ac9EYz?usp=sharing
+## 🔗 Akses Cepat
+
+- 🌐 **Website (Hosting):** https://aspel.cyou/arizaluas/auth/login.php
+- 🎥 **Video Demo:** https://drive.google.com/drive/folders/1EkEnMQ_ubY4QtnRSSLLfV4tNs3Ac9EYz?usp=sharing
 
 ---
 
