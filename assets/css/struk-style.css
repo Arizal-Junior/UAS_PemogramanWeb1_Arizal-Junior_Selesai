@@ -1,0 +1,183 @@
+/* assets/css/struk-style.css */
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap');
+
+* {
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Poppins', sans-serif;
+    background-color: #f0f2f5;
+    display: flex;
+    justify-content: center;
+    /* PERBAIKAN: Ubah flex-start menjadi center agar di tengah vertikal */
+    align-items: center; 
+    min-height: 100vh;
+    margin: 0;
+    padding-top: 30px;
+    padding-bottom: 30px;
+    color: #333;
+}
+
+/* --- TAMPILAN DI LAYAR (PREVIEW) --- */
+.receipt-container {
+    background: #fff;
+    width: 350px; /* Lebar standar struk */
+    padding: 25px;
+    border-radius: 4px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+    position: relative;
+    margin: 0 auto;
+}
+
+/* HEADER */
+.header {
+    text-align: center;
+    margin-bottom: 15px;
+    border-bottom: 2px dashed #000;
+    padding-bottom: 15px;
+}
+
+.brand-name {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: #2e7d32;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    margin-bottom: 5px;
+    text-transform: uppercase;
+}
+
+.meta-info {
+    font-size: 0.8rem;
+    color: #000;
+    line-height: 1.4;
+}
+
+/* DAFTAR ITEM */
+.item-list {
+    width: 100%;
+    margin-bottom: 15px;
+    border-bottom: 2px dashed #000;
+    padding-bottom: 15px;
+}
+
+.item-row {
+    margin-bottom: 8px;
+    font-size: 0.9rem;
+}
+
+.item-name {
+    font-weight: 600;
+    color: #000;
+    margin-bottom: 2px;
+}
+
+.item-detail {
+    display: flex;
+    justify-content: space-between;
+    color: #000;
+    font-size: 0.9rem;
+}
+
+/* TOTAL & PEMBAYARAN */
+.summary-section {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 4px;
+    font-size: 0.9rem;
+    color: #000;
+}
+
+.total-row {
+    font-weight: 800;
+    font-size: 1.1rem;
+    margin-top: 10px;
+    margin-bottom: 10px;
+    border-top: 2px dashed #000;
+    border-bottom: 2px dashed #000;
+    padding: 10px 0;
+    color: #000;
+}
+
+/* FOOTER STRUK */
+.footer {
+    text-align: center;
+    margin-top: 20px;
+    font-size: 0.8rem;
+    color: #000;
+    line-height: 1.5;
+}
+
+/* TOMBOL AKSI */
+.actions {
+    margin-top: 25px;
+    display: flex;
+    gap: 10px;
+}
+
+.btn {
+    flex: 1;
+    padding: 10px;
+    border: none;
+    border-radius: 8px;
+    font-weight: 600;
+    cursor: pointer;
+    font-family: 'Poppins', sans-serif;
+    text-decoration: none;
+    text-align: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
+    font-size: 0.9rem;
+    transition: background 0.2s;
+}
+
+.btn-print { background: #2e7d32; color: #fff; }
+.btn-print:hover { background: #1b5e20; }
+
+.btn-back { background: #e0e0e0; color: #333; }
+.btn-back:hover { background: #d6d6d6; }
+
+
+/* --- SETTINGAN KHUSUS PRINT (PERBAIKAN UTAMA) --- */
+@media print {
+    @page {
+        margin: 0;
+        size: auto; /* Biarkan printer mengatur ukuran kertas */
+    }
+
+    body {
+        background-color: #fff;
+        display: block;
+        margin: 0;
+        padding: 0;
+    }
+
+    .receipt-container {
+        /* KUNCI: Lebar Tetap & Posisi Tengah */
+        width: 80mm; /* Standar lebar kertas kasir */
+        max-width: 350px; /* Maksimal lebar agar tidak melar di A4 */
+        margin: 20px auto; /* Tengah secara horizontal (untuk A4) */
+        padding: 10px;
+        box-shadow: none;
+        border: none;
+        position: relative;
+        left: 0;
+        right: 0;
+    }
+
+    /* Pastikan warna hitam pekat (hemat tinta & jelas) */
+    .brand-name { color: #000 !important; font-size: 1.4rem; }
+    .meta-info, .item-name, .item-detail, .summary-section, .footer {
+        color: #000 !important;
+    }
+    
+    /* Sembunyikan tombol saat print */
+    .actions, .no-print {
+        display: none !important;
+    }
+}

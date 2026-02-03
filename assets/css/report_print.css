@@ -1,0 +1,119 @@
+body { 
+    font-family: 'Poppins', sans-serif; 
+    color: #333; 
+    background: #fff;
+    margin: 0;
+    padding: 40px; /* Padding layar normal */
+}
+
+/* --- BUTTONS --- */
+.action-bar {
+    margin-bottom: 30px;
+    display: flex;
+    gap: 10px;
+    border-bottom: 1px solid #eee;
+    padding-bottom: 20px;
+}
+.btn {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: 600;
+    font-family: 'Poppins', sans-serif;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 0.9rem;
+    transition: 0.2s;
+}
+.btn-back { background-color: #f0f0f0; color: #333; }
+.btn-back:hover { background-color: #e0e0e0; }
+
+.btn-print { background-color: #2e7d32; color: white; }
+.btn-print:hover { background-color: #1b5e20; }
+
+/* --- HEADER LAPORAN --- */
+.report-content {
+    max-width: 100%;
+    margin: 0 auto;
+}
+
+.header { 
+    text-align: center; 
+    margin-bottom: 30px; 
+    border-bottom: 3px double #2e7d32; 
+    padding-bottom: 20px; 
+}
+.header h1 { margin: 0; color: #2e7d32; text-transform: uppercase; font-size: 22px; letter-spacing: 1px; }
+.header p { margin: 5px 0 0; color: #000; font-size: 13px; }
+.header .sub-title { font-weight: bold; margin-top: 15px; display: block; font-size: 16px; text-transform: uppercase; text-decoration: underline; }
+
+/* --- TABEL --- */
+table { width: 100%; border-collapse: collapse; margin-top: 10px; font-size: 12px; }
+
+th, td { 
+    border: 1px solid #000; /* Border hitam tegas */
+    padding: 10px 8px; 
+    text-align: left; 
+    vertical-align: middle;
+}
+
+th { 
+    background-color: #f2f2f2; /* Abu muda agar hemat tinta */
+    color: #000; 
+    font-weight: 700; 
+    text-transform: uppercase;
+    font-size: 11px;
+    text-align: center;
+}
+
+.text-end { text-align: right; }
+.text-center { text-align: center; }
+.fw-bold { font-weight: 700; }
+
+.total-row td { 
+    background-color: #fff; 
+    font-weight: 800; 
+    font-size: 13px;
+    border-top: 2px solid #000; /* Garis total lebih tebal */
+}
+
+/* --- TANDA TANGAN --- */
+.footer-sign { 
+    margin-top: 50px; 
+    float: right;
+    width: 250px;
+    text-align: center;
+    page-break-inside: avoid; 
+}
+.footer-sign p { margin-bottom: 80px; font-size: 13px; color: #000; }
+.sign-name { 
+    border-top: 1px solid #000; 
+    padding-top: 10px; 
+    font-weight: bold; 
+    display: block;
+    color: #000;
+}
+
+/* --- SETTINGAN KHUSUS PRINT --- */
+@media print {
+    @page {
+        margin: 0; 
+        size: auto;
+    }
+
+    body { 
+        padding: 2cm; 
+        margin: 0;
+        -webkit-print-color-adjust: exact; 
+    }
+
+    .action-bar { display: none !important; } 
+    
+    table, th, td { border: 1px solid #000 !important; }
+    .header { border-bottom: 3px double #000 !important; } 
+    
+    .header h1 { color: #2e7d32 !important; } 
+}

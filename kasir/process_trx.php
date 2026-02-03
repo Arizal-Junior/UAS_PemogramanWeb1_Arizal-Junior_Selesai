@@ -4,66 +4,83 @@ include '../config/database.php';
 
 // Cek Login
 if (!isset($_SESSION['user_id']) || $_SESSION['role'] != 'kasir') {
-    die("Akses Ditolak");
+    header("Location: ../auth/login.php");
+    exit;
 }
 
-if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['cart_data'])) {
-    
-    // 1. Ambil Data dari Frontend
+if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+    // 1. Ambil Data dari Form & Session
     $user_id = $_SESSION['user_id'];
-    $cash = $_POST['cash']; // Uang tunai dari inputan
-    $cart = json_decode($_POST['cart_data'], true); // Ubah JSON jadi Array PHP
     
-    // Hitung ulang total di backend (Demi keamanan, jangan percaya 100% data frontend)
-    $subtotal = 0;
-    foreach ($cart as $item) {
-        $subtotal += ($item['price'] * $item['qty']);
-    }
+    $cart_json = $_POST['cart_data'];
+    $total_amount = $_POST['total_amount']; // Total sudah termasuk pajak
+    $cash = $_POST['cash'];
+    $change_amount = $cash - $total_amount;
     
-    $tax = $subtotal * 0.10; // Pajak 10%
-    $total_amount = $subtotal + $tax;
-    $kembalian = $cash - $total_amount;
+    // Decode JSON Cart
+    $cart_items = json_decode($cart_json, true);
 
-    // Validasi Uang
-    if ($cash < $total_amount) {
-        echo "<script>alert('Uang tunai kurang!'); window.history.back();</script>";
+    if (empty($cart_items)) {
+        header("Location: index.php");
         exit;
     }
 
-    // 2. Simpan ke Tabel TRANSACTIONS (Header)
-    $stmt = $conn->prepare("INSERT INTO transactions (user_id, subtotal, tax, total_amount, cash, change_amount) VALUES (?, ?, ?, ?, ?, ?)");
-    // Note: Kita perlu tambah kolom 'cash' dan 'change_amount' di tabel transactions agar struk lengkap
-    // Tapi untuk sekarang kita simpan data dasar dulu, atau kita alter tabelnya nanti.
-    // Asumsi tabel sesuai desain awal:
-    $stmt = $conn->prepare("INSERT INTO transactions (user_id, subtotal, tax, total_amount) VALUES (?, ?, ?, ?)");
-    $stmt->bind_param("iddd", $user_id, $subtotal, $tax, $total_amount);
+    // 2. Hitung Pajak & Subtotal (Validasi Backend)
+    $subtotal = 0;
+    foreach ($cart_items as $item) {
+        $subtotal += $item['price'] * $item['qty'];
+    }
+    $tax = $subtotal * 0.10;
     
-    if ($stmt->execute()) {
-        $transaction_id = $conn->insert_id; // Ambil ID Transaksi yang baru saja dibuat
+    // 3. Database Transaction
+    $conn->begin_transaction();
 
-        // 3. Simpan Detail & Kurangi Stok
-        $stmt_detail = $conn->prepare("INSERT INTO transaction_details (transaction_id, product_id, qty, price) VALUES (?, ?, ?, ?)");
-        $stmt_stock = $conn->prepare("UPDATE products SET stock = stock - ? WHERE id = ?");
+    try {
+        // A. Simpan ke Tabel Transactions
+        // Sesuai gambar DB: user_id, transaction_date, subtotal, tax, total_amount, cash, change_amount
+        // transaction_date diisi otomatis oleh NOW()
+        $stmt = $conn->prepare("INSERT INTO transactions (user_id, transaction_date, subtotal, tax, total_amount, cash, change_amount) VALUES (?, NOW(), ?, ?, ?, ?, ?)");
+        
+        // Perbaikan: Bind 6 variabel sesuai jumlah '?' (NOW() tidak di-bind)
+        // String tipe data: "iddddd" (1 Integer, 5 Double)
+        $stmt->bind_param("iddddd", $user_id, $subtotal, $tax, $total_amount, $cash, $change_amount);
+        
+        if (!$stmt->execute()) {
+            throw new Exception("Gagal menyimpan transaksi: " . $stmt->error);
+        }
+        
+        // Ambil ID transaksi yang baru masuk
+        $transaction_id = $conn->insert_id; 
 
-        foreach ($cart as $item) {
-            // Insert Detail
+        // B. Simpan Detail & Kurangi Stok
+        // Kolom di transaction_details: transaction_id, products_id, qty, price
+        $stmt_detail = $conn->prepare("INSERT INTO transaction_details (transaction_id, products_id, qty, price) VALUES (?, ?, ?, ?)");
+        
+        // Kolom PK di products: products_id
+        $stmt_stock = $conn->prepare("UPDATE products SET stock = stock - ? WHERE products_id = ?");
+
+        foreach ($cart_items as $item) {
+            // Simpan detail (iiid: int, int, int, double)
             $stmt_detail->bind_param("iiid", $transaction_id, $item['id'], $item['qty'], $item['price']);
             $stmt_detail->execute();
 
-            // Update Stok (Kurangi)
+            // Kurangi stok (ii: int, int)
             $stmt_stock->bind_param("ii", $item['qty'], $item['id']);
             $stmt_stock->execute();
         }
 
+        // C. Commit jika semua berhasil
+        $conn->commit();
+
         // 4. Redirect ke Halaman Struk
-        // Kita kirim nominal tunai lewat URL agar bisa dicetak di struk
-        header("Location: struk.php?id=$transaction_id&cash=$cash");
+        header("Location: struk.php?id=" . $transaction_id);
         exit;
 
-    } else {
-        echo "Gagal menyimpan transaksi: " . $conn->error;
+    } catch (Exception $e) {
+        // Batalkan perubahan jika ada error
+        $conn->rollback();
+        echo "Terjadi Kesalahan: " . $e->getMessage();
     }
-
 } else {
     header("Location: index.php");
 }

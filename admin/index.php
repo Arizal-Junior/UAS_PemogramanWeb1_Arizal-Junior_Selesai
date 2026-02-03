@@ -1,5 +1,6 @@
 <?php
 session_start();
+include '../config/database.php';
 
 // Cek Login & Role
 if (!isset($_SESSION['user_id']) || $_SESSION['role'] != 'admin') {
@@ -7,10 +8,30 @@ if (!isset($_SESSION['user_id']) || $_SESSION['role'] != 'admin') {
     exit;
 }
 
-// Data Dummy untuk Tampilan
-$countKategori = "5"; 
-$countProduk = "12"; 
-$countUser = "3"; 
+// Ambil ID User (Admin) yang sedang login
+$current_user_id = $_SESSION['user_id'];
+
+// --- HITUNG STATISTIK REAL-TIME ---
+
+// 1. Hitung Kategori
+$stmt_cat = $conn->prepare("SELECT COUNT(*) as total FROM categories WHERE user_id = ?");
+$stmt_cat->bind_param("i", $current_user_id);
+$stmt_cat->execute();
+$countKategori = $stmt_cat->get_result()->fetch_assoc()['total'];
+
+// 2. Hitung Produk
+$stmt_prod = $conn->prepare("SELECT COUNT(*) as total FROM products WHERE user_id = ? AND is_active = 1");
+$stmt_prod->bind_param("i", $current_user_id);
+$stmt_prod->execute();
+$countProduk = $stmt_prod->get_result()->fetch_assoc()['total'];
+
+// 3. Hitung User (Kasir + Admin) - PERBAIKAN DISINI
+// Logika Baru: "Hitung user yang DIBUAT OLEH SAYA (created_by = saya) ATAU SAYA SENDIRI (user_id = saya)"
+$stmt_user = $conn->prepare("SELECT COUNT(*) as total FROM users WHERE created_by = ? OR user_id = ?");
+$stmt_user->bind_param("ii", $current_user_id, $current_user_id);
+$stmt_user->execute();
+$countUser = $stmt_user->get_result()->fetch_assoc()['total'];
+
 ?>
 
 <!DOCTYPE html>
@@ -18,7 +39,7 @@ $countUser = "3";
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard - Matcha Cafe</title>
+    <title>Dashboard - Matchify</title>
     
     <link rel="stylesheet" href="../bootstrap-5.3.8-dist/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
@@ -30,10 +51,15 @@ $countUser = "3";
 
         <div id="sidebar-wrapper">
             <div class="sidebar-heading">
-                <div class="brand-icon">
-                    <i class="bi bi-cup-hot-fill"></i>
+                <div class="brand-wrapper">
+                    <div class="brand-icon">
+                        <i class="bi bi-cup-hot-fill"></i>
+                    </div>
+                    <span>Matchify</span>
                 </div>
-                <span>Matcha Cafe</span>
+                <button class="btn-sidebar-close sidebarToggle">
+                    <i class="bi bi-list"></i>
+                </button>
             </div>
             
             <div class="list-group list-group-flush">
@@ -49,6 +75,12 @@ $countUser = "3";
                 <a href="users.php" class="list-group-item">
                     <i class="bi bi-people"></i> Manajemen User
                 </a>
+                <a href="reports.php" class="list-group-item">
+                    <i class="bi bi-file-earmark-bar-graph"></i> Laporan Penjualan
+                </a>
+                <a href="profile.php" class="list-group-item">
+                    <i class="bi bi-person-circle"></i> Profile Saya
+                </a>
             </div>
 
             <div class="sidebar-footer">
@@ -61,12 +93,14 @@ $countUser = "3";
         <div id="page-content-wrapper">
             
             <div class="top-navbar">
-                <h2 class="page-title">Dashboard</h2>
+                <div class="d-flex align-items-center gap-3">
+                    <button class="btn btn-light shadow-sm border-0 sidebarToggle" id="sidebarToggleTop">
+                        <i class="bi bi-list fs-4"></i>
+                    </button>
+                    <h2 class="page-title mb-0">Dashboard</h2>
+                </div>
                 
                 <div class="d-flex align-items-center gap-3">
-                    <div class="search-box">
-                        <input type="text" placeholder="Cari menu...">
-                    </div>
                     <div class="user-profile">
                         <div class="avatar">
                             <?php echo substr($_SESSION['username'], 0, 1); ?>
@@ -137,14 +171,31 @@ $countUser = "3";
                     <h1 class="display-4 fw-bold text-success mb-0"><?php echo date('d'); ?></h1>
                     <p class="text-muted fw-bold"><?php echo date('l'); ?></p>
                     <div class="mt-3 text-muted small">
-                        "Semangat kerja, Admin!"
+                        "Semangat kerja, <?php echo ucfirst($_SESSION['username']); ?>!"
                     </div>
                 </div>
             </div>
 
+            <footer class="custom-footer">
+                @Copyright by 23552011310_Arizal Junior_TIF 23 CNS B
+            </footer>
+
         </div>
-        </div>
+    </div>
 
     <script src="../bootstrap-5.3.8-dist/js/bootstrap.bundle.min.js"></script>
+
+    <script>
+    window.addEventListener('DOMContentLoaded', event => {
+        const toggleButtons = document.querySelectorAll('.sidebarToggle');
+        
+        toggleButtons.forEach(button => {
+            button.addEventListener('click', event => {
+                event.preventDefault();
+                document.body.classList.toggle('sb-sidenav-toggled');
+            });
+        });
+    });
+    </script>
 </body>
 </html>

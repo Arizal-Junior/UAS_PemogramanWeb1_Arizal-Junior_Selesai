@@ -7,8 +7,10 @@ body {
     background-color: #ffffff; 
     margin: 0;
     padding: 0;
-    height: 100vh;
+    min-height: 100vh; /* Gunakan min-height agar fleksibel */
     display: flex;
+    /* PENTING: Susun vertikal agar footer tidak menimpa konten di layar pendek */
+    flex-direction: column; 
     align-items: center;
     justify-content: center;
 }
@@ -18,6 +20,8 @@ body {
     padding: 20px;
     display: flex;
     justify-content: center;
+    flex-grow: 1; /* Isi ruang kosong agar footer terdorong ke bawah */
+    align-items: center; /* Pusatkan kartu login secara vertikal */
 }
 
 /* KARTU LOGIN UTAMA */
@@ -89,8 +93,13 @@ body {
 }
 
 .login-header {
-    margin-bottom: 30px;
+    margin-bottom: 30px; /* Jarak total ke input username (30px) */
     text-align: center;
+}
+
+/* PERBAIKAN: Reset margin paragraf agar jarak presisi sama dengan bagian bawah */
+.login-header p {
+    margin-bottom: 0;
 }
 
 .login-header h2 {
@@ -189,4 +198,20 @@ body {
     .card-right {
         padding: 30px;
     }
+}
+
+/* --- FOOTER STYLE (UKURAN DISAMAKAN DENGAN DASHBOARD/POS) --- */
+.custom-footer {
+    background: transparent; 
+    color: #333333;            /* Teks Hitam/Gelap */
+    text-align: center;
+    padding: 10px 0;           /* Padding diperkecil (15px -> 10px) agar sama dgn Dashboard */
+    width: 100%;
+    font-size: 0.8rem;         /* Font diperkecil (0.85rem -> 0.8rem) agar sama dgn Dashboard */
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    margin-top: auto;          /* Footer tetap di bawah */
+    box-shadow: none;          /* Hapus bayangan */
+    position: relative;
+    z-index: 10;
 }
