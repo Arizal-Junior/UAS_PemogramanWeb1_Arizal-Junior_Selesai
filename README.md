@@ -32,7 +32,7 @@
 
 ## 🔗 Akses Cepat
 
-- 🌐 **Website (Hosting):** https://aspel.cyou/arizaluas/auth/login.php
+- 🌐 **Website (Hosting):** https://aspel.cyou/arizaluas/
 - 🎥 **Video Demo:** https://drive.google.com/drive/folders/1EkEnMQ_ubY4QtnRSSLLfV4tNs3Ac9EYz?usp=sharing
 
 ---
